@@ -1,0 +1,35 @@
+1st Step
+	* Create a config server *
+		A.) create a new spring boot project
+		B.) add the following dependencies
+			a.) eureka discovery client
+			b.) spring-cloud-config-server
+		C.) Add all the eureka client related props
+			a.) eureka.instance.prefer-ip-address=true
+			b.) eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+			c.) eureka.client.register-with-eureka=true
+			d.) eureka.client.fetch-registry=true
+		D.) add @EnableConfigServer on the main application file annotated with @SpringBootApplication
+		E.) Create a new git repository
+			a.) Add a properties file (ex. application.properties/application.yml)
+			b.) Add all the required properties
+		F.) Add the following property to the ConfigServer's properties file to fetch the configuration
+			a.) Specify the git url
+				spring.cloud.config.server.git.uri=https://github.com/Vishal-Bala907/JobConfigs
+	
+	* Use the configuration of the config server *
+		A.) Add the config client dependency to all microservices, where you want to use
+			the configuration of the config server
+			
+			 <dependency>
+      			<groupId>org.springframework.cloud</groupId>
+      			<artifactId>spring-cloud-starter-config</artifactId>
+    		</dependency>
+    	B.) Add the following property to the properties file
+    		spring.config.import=configserver:http://localhost:8888/
+    		                      or
+    		spring.config.import=optional:configserver:http://localhost:8888/
+    	    
+    	    spring.profiles.active=dev
+    	
+		

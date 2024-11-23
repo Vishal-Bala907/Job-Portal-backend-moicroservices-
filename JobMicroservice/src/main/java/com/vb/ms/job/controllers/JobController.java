@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.vb.ms.job.controllers;
 
 import java.util.List;
@@ -20,14 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vb.ms.job.modals.Job;
 import com.vb.ms.job.services.implementations.JobServiceImplementation;
-
-
-
-/**
- * @Controller class for handling Job bases API (request/response)
- * @author vishal bala
- *
- */
 @RestController
 @RequestMapping("/jbs")
 public class JobController {
