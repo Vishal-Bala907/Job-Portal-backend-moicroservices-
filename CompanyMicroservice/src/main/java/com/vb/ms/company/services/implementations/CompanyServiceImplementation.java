@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import com.vb.ms.company.modals.Review;
 import com.vb.ms.company.repos.CompanyRepository;
 import com.vb.ms.company.services.interfaces.CompanyService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 
 @Service
 public class CompanyServiceImplementation implements CompanyService {
@@ -27,7 +31,10 @@ public class CompanyServiceImplementation implements CompanyService {
 	
 	@Autowired
 	private CompanyRepository companyRepository;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CompanyServiceImplementation.class);
 
+	@CircuitBreaker(name="companyBreaker" , fallbackMethod = "findAllFallBack")
 	@Override
 	public List<CompanyDTO> findAllCompanies() {
 		List<Company> companies = companyRepository.findAll();
@@ -47,6 +54,17 @@ public class CompanyServiceImplementation implements CompanyService {
 		
 		
 		return collect;
+	}
+	
+	public List<CompanyDTO> findAllFallBack(Exception ex) {
+		LOGGER.warn("FALL-BACK {}" + ex.getMessage());
+		return List.of( CompanyDTO.builder()
+				.id(0l)
+				.companyName("fall-back company")
+				.description("fallback description")
+				.jobs(null)
+				.reviews(null)
+				.build() );
 	}
 
 	@Override
