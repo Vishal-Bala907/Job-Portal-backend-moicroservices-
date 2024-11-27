@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vb.ms.review.messaging.ReviewMessageProducer;
 import com.vb.ms.review.modals.Review;
 import com.vb.ms.review.repos.ReviewRepo;
 import com.vb.ms.review.service.interfaces.ReviewService;
@@ -15,6 +16,8 @@ public class ReviewServiceImple implements ReviewService {
 
 	@Autowired
 	private ReviewRepo reviewRepo;
+	@Autowired
+	private ReviewMessageProducer messageProducer;
 	
 	@Override
 	public String createReview(Long compId , Review review) {
@@ -27,6 +30,8 @@ public class ReviewServiceImple implements ReviewService {
 //		companyService.createCompany(company);
 		review.setCompId(compId);
 		reviewRepo.save(review);
+		
+		messageProducer.sendReviewMessage(review);
 		return "Review added...";
 	}
 
